@@ -3,7 +3,11 @@ import numpy as np
 import os
 from skimage.io import imread
 import time
+import matplotlib.pyplot as plt
 import pickle
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+gpu = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpu[0], True)
 
 MODELS_ROOT = './store/models/'
 TENSORBOARD_ROOT = './store/tensorboard/'
@@ -11,7 +15,7 @@ IMAGES_ROOT = '../images/'
 
 
 def make_noisy(img):
-    amount = np.random.random() * 0.35
+    amount = np.random.random() * 0.05
     noisy_img = np.copy(img)
 
     num_noise = np.ceil(amount * img.shape[0] * img.shape[1])
@@ -22,7 +26,7 @@ def make_noisy(img):
 
 
 def get_image(path):
-    return imread(path)
+    return imread(path) / 255.0
 
 
 class DataGenerator(tf.keras.utils.Sequence):
@@ -51,9 +55,9 @@ class DataGenerator(tf.keras.utils.Sequence):
 
 
 def get_callbacks(model_path, patience, tensorboard_path):
-    return [tf.keras.callbacks.EarlyStopping(patience=patience),
+    return [tf.keras.callbacks.ReduceLROnPlateau(patience=patience//3),
+            tf.keras.callbacks.EarlyStopping(patience=patience),
             tf.keras.callbacks.ModelCheckpoint(model_path),
-            tf.keras.callbacks.ReduceLROnPlateau(patience=patience//3),
             tf.keras.callbacks.TensorBoard(tensorboard_path)]
 
 
@@ -75,7 +79,16 @@ def get_tensorboard_path(root):
 
 
 def get_model_path(root):
-    return os.path.join(root, time.strftime('model_%Y_%m_%d-%H_%M_%S'))
+    return os.path.join(root, time.strftime('model_%Y_%m_%d-%H_%M_%S.hdf5'))
+
+def save_image(image, name, model):
+    f, ax = plt.subplots(1, 3)
+    noisy_img = make_noisy(image)
+    pred_img = model.predict(np.expand_dims(noisy_img, axis=0))
+    ax[0].imshow(image)
+    ax[1].imshow(noisy_img)
+    ax[2].imshow(pred_img[0])
+    plt.savefig(name)
 
 
 if __name__ == '__main__':
@@ -99,5 +112,3 @@ if __name__ == '__main__':
                                   verbose=1)
     with open('./history.pickle', 'wb') as f:
         pickle.dump(history, f)
-
-
