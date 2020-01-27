@@ -40,4 +40,3 @@ if __name__ == '__main__':
                                   validation_data=val_data_generator,
                                   callbacks=callbacks,
                                   verbose=1)
-
