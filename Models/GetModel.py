@@ -19,15 +19,15 @@ def load_model(in_shape, path_to_model):
 def get_untrained_model(in_shape):
     """Returns the uninitialized model object for training"""
     return tf.keras.Sequential([
-        tf.keras.layers.Conv2D(filters=32, kernel_size=5, strides=1, padding='same', input_shape=in_shape),
+        tf.keras.layers.Conv2D(filters=32, kernel_size=3, strides=1, padding='same', input_shape=in_shape),
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Activation('relu'),
         ResNetConv2D(depth=3, filters=32, kernels=2, activation='relu'),
-        tf.keras.layers.Conv2D(filters=64, kernel_size=5, strides=1, padding='same'),
+        tf.keras.layers.Conv2D(filters=64, kernel_size=3, strides=1, padding='same'),
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Activation('relu'),
-        ResNetConv2D(depth=5, filters=64, kernels=2, activation='relu'),
-        tf.keras.layers.Conv2D(filters=128, kernel_size=5, strides=1, padding='same'),
+        ResNetConv2D(depth=3, filters=64, kernels=2, activation='relu'),
+        tf.keras.layers.Conv2D(filters=128, kernel_size=3, strides=1, padding='same'),
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.Activation('relu'),
         tf.keras.layers.Conv2D(filters=3, kernel_size=3, strides=1, padding='same'),
