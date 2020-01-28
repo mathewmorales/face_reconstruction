@@ -19,7 +19,7 @@ def save_example(images, path, name, trained_model, corrupt_func):
     trained_model -- The trained model to test.
     corrupt_func -- The function to use to corrupt the image
     """
-    num_examples = 5
+    num_examples = 3
     f, ax = plt.subplots(num_examples, 3)
     for i in range(num_examples):
         noisy_img = corrupt_func(images[i])
@@ -27,4 +27,7 @@ def save_example(images, path, name, trained_model, corrupt_func):
         ax[i, 0].imshow(images[i])
         ax[i, 1].imshow(noisy_img)
         ax[i, 2].imshow(pred_img[0])
+        ax[i, 0].axis('off')
+        ax[i, 1].axis('off')
+        ax[i, 2].axis('off')
     plt.savefig(os.path.join(path, name))

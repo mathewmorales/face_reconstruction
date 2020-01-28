@@ -26,8 +26,8 @@ if __name__ == '__main__':
     val_images_path = os.path.join(IMAGES_ROOT, 'val')
     corrupt_func = pepper
     model_path = get_model_save_path(MODELS_ROOT)
-    early_stopping_patience = 10
-    reduce_lr_patience = early_stopping_patience // 3
+    early_stopping_patience = 4
+    reduce_lr_patience = 2
     input_shape = (128, 128, 3)
     init_lr = 0.1
 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     # Show some sample test results
     test_images_path = os.path.join(IMAGES_ROOT, 'test')
-    test_image_files = os.listdir(test_images_path)[5]
+    test_image_files = os.listdir(test_images_path)[:3]
     test_images = [get_image(os.path.join(test_images_path, x)) for x in test_image_files]
     save_example(test_images, './store/Examples/', 'test_images.png', model, corrupt_func)
 
